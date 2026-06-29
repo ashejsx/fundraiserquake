@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Family Relief Fund — Julio Enrique</title>
+
+  <!-- Outfit: clean, humanist grotesque. Pairs well with mono for details. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* =====================
+       DESIGN TOKENS
+    ===================== */
+    :root {
+      --bg:          #0e0f11;
+      --surface:     #16181c;
+      --surface-2:   #1e2127;
+      --border:      #2a2d35;
+      --border-soft: #232630;
+
+      --text:        #e8eaf0;
+      --text-2:      #9298a8;
+      --text-3:      #5a6070;
+
+      --cobalt:      #3b6ef8;
+      --cobalt-dim:  rgba(59, 110, 248, 0.12);
+      --cobalt-glow: rgba(59, 110, 248, 0.25);
+
+      --green:       #22c55e;
+
+      --font-sans: 'Outfit', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      --radius-sm: 4px;
+      --radius:    8px;
+      --radius-lg: 12px;
+
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      scroll-behavior: smooth;
+      color-scheme: dark;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100dvh;
+    }
+
+    /* =====================
+       NOISE TEXTURE OVERLAY
+    ===================== */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 200px 200px;
+    }
+
+    /* =====================
+       PAGE WRAPPER
+    ===================== */
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* =====================
+       HEADER / NAV BAR
+    ===================== */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem 0;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .topbar-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-3);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .topbar-badge {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--green);
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.2);
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--radius-sm);
+      letter-spacing: 0.06em;
+    }
+
+    .live-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: var(--green);
+      border-radius: 50%;
+      margin-right: 0.4rem;
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.35; }
+    }
+
+    /* =====================
+       HERO
+    ===================== */
+    .hero {
+      padding: 4rem 0 3rem;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .hero-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--cobalt);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 24px;
+      height: 1px;
+      background: var(--cobalt);
+      flex-shrink: 0;
+    }
+
+    h1 {
+      font-size: clamp(2.4rem, 6vw, 3.8rem);
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+      max-width: 14ch;
+    }
+
+    h1 .muted {
+      color: var(--text-3);
+      font-weight: 300;
+      display: block;
+    }
+
+    .hero-sub {
+      font-size: 1rem;
+      color: var(--text-2);
+      font-weight: 300;
+      max-width: 52ch;
+      line-height: 1.7;
+    }
+
+    /* =====================
+       PROGRESS BLOCK
+    ===================== */
+    .progress-block {
+      padding: 2.5rem 0;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .progress-numbers {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .amount-raised {
+      font-size: clamp(2.2rem, 5vw, 3rem);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      color: var(--text);
+      line-height: 1;
+    }
+
+    .amount-raised .currency {
+      font-size: 0.55em;
+      font-weight: 400;
+      color: var(--text-3);
+      margin-right: 0.1em;
+      vertical-align: super;
+    }
+
+    .goal-block {
+      text-align: right;
+    }
+
+    .goal-number {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--text-3);
+    }
+
+    .goal-number strong {
+      color: var(--text-2);
+      font-weight: 500;
+    }
+
+    .donors-line {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-3);
+      margin-top: 0.2rem;
+    }
+
+    /* track */
+    .progress-track {
+      width: 100%;
+      height: 3px;
+      background: var(--surface-2);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 0.65rem;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--cobalt), #6fa3ff);
+      border-radius: 999px;
+      width: 0%;
+      transition: width 1.4s var(--ease-out);
+      box-shadow: 0 0 12px var(--cobalt-glow);
+    }
+
+    .progress-meta-row {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-3);
+    }
+
+    /* =====================
+       SECTION CHROME
+    ===================== */
+    .section {
+      padding: 3rem 0;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .section:last-child { border-bottom: none; }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--text-3);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border-soft);
+    }
+
+    /* =====================
+       STORY SECTION
+    ===================== */
+    .story-body {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    /* Shimmer placeholder paragraphs */
+    .story-ph {
+      background: var(--surface);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .ph-line {
+      height: 13px;
+      background: var(--surface-2);
+      border-radius: 2px;
+      animation: shimmer 1.8s ease-in-out infinite alternate;
+    }
+
+    .ph-line.w-full  { width: 100%; }
+    .ph-line.w-9     { width: 90%; }
+    .ph-line.w-7     { width: 70%; }
+    .ph-line.w-5     { width: 50%; }
+
+    @keyframes shimmer {
+      from { opacity: 0.4; }
+      to   { opacity: 0.9; }
+    }
+
+    .story-note {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-3);
+      text-align: center;
+      padding-top: 0.5rem;
+    }
+
+    /* =====================
+       DONATE SECTION
+    ===================== */
+    .donate-intro {
+      font-size: 0.9rem;
+      color: var(--text-2);
+      margin-bottom: 1.75rem;
+      max-width: 50ch;
+      font-weight: 300;
+    }
+
+    .methods {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .method {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.25rem;
+      text-decoration: none;
+      color: var(--text);
+      cursor: pointer;
+      position: relative;
+      transition: border-color 0.2s, background 0.2s, transform 0.12s;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .method:hover {
+      border-color: var(--cobalt);
+      background: var(--surface-2);
+    }
+
+    .method:active {
+      transform: scale(0.99);
+    }
+
+    .method-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      background: var(--cobalt-dim);
+      border: 1px solid rgba(59, 110, 248, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--cobalt);
+    }
+
+    .method-icon svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .method-body {}
+
+    .method-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: block;
+      color: var(--text);
+    }
+
+    .method-detail {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-3);
+      margin-top: 0.2rem;
+      display: block;
+    }
+
+    .method-right {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-shrink: 0;
+    }
+
+    .fee-badge {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.06em;
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      color: var(--text-3);
+      white-space: nowrap;
+    }
+
+    .fee-badge.zero {
+      color: var(--green);
+      background: rgba(34, 197, 94, 0.07);
+      border-color: rgba(34, 197, 94, 0.15);
+    }
+
+    .action-icon {
+      color: var(--text-3);
+      flex-shrink: 0;
+      transition: color 0.2s;
+    }
+
+    .method:hover .action-icon { color: var(--cobalt); }
+
+    .copy-toast {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--surface-2);
+      border-radius: var(--radius);
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--green);
+      letter-spacing: 0.06em;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+
+    .copy-toast.show { opacity: 1; }
+
+    /* =====================
+       FOOTER
+    ===================== */
+    footer {
+      padding: 2rem 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-left {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--text-3);
+      line-height: 1.7;
+    }
+
+    .footer-right {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text-3);
+      text-align: right;
+    }
+
+    /* =====================
+       ENTRY ANIMATIONS
+    ===================== */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(12px);
+      animation: fadeIn 0.6s var(--ease-out) forwards;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .d1 { animation-delay: 0.05s; }
+    .d2 { animation-delay: 0.15s; }
+    .d3 { animation-delay: 0.25s; }
+    .d4 { animation-delay: 0.35s; }
+    .d5 { animation-delay: 0.45s; }
+
+    /* =====================
+       MOBILE
+    ===================== */
+    @media (max-width: 520px) {
+      .fee-badge { display: none; }
+      .progress-numbers { flex-direction: column; gap: 0.4rem; }
+      .goal-block { text-align: left; }
+      footer { flex-direction: column; align-items: flex-start; }
+      .footer-right { text-align: left; }
+    }
+
+    /* =====================
+       REDUCED MOTION
+    ===================== */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- TOP BAR -->
+  <header class="topbar fade-in d1">
+    <span class="topbar-label">Personal Fundraiser / June 2026</span>
+    <span class="topbar-badge">
+      <span class="live-dot"></span>Active
+    </span>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <p class="hero-eyebrow fade-in d1">Did this with Claude Code and hurry in Caracas, Venezuela.</p>
+    <h1 class="fade-in d2">
+      Keep the lights on.
+      <span class="muted">Help me rebuild.</span>
+    </h1>
+    <p class="hero-sub fade-in d3">
+      A personal fundraiser for my own and my family's recovery after the 2026 Venezuela earthquakes.
+      Every dollar goes directly toward keeping my livelihood afloat so I can keep going, as well as to help donate for those that still need the supplies.
+    </p>
+  </section>
+
+  <!-- PROGRESS -->
+  <div class="progress-block fade-in d3">
+    <div class="progress-numbers">
+      <div class="amount-raised">
+        <span class="currency">$</span><span id="raised-num">0</span>
+      </div>
+      <div class="goal-block">
+        <div class="goal-number">Goal: <strong>$500 USD</strong></div>
+        <div class="donors-label" id="donors-label">0 donors</div>
+      </div>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
+    <div class="progress-meta-row">
+      <span id="pct-label">0%</span>
+      <span>100%</span>
+    </div>
+  </div>
+
+  <!-- STORY -->
+  <section class="section fade-in d4">
+    <div class="section-label">The Story</div>
+
+    <div class="story-body">
+      <!-- PLACEHOLDER: Replace these .story-ph blocks with real <p> tags -->
+      <!-- Example: <p style="color:var(--text-2);font-weight:300;line-height:1.8;">Your paragraph here.</p> -->
+
+      <div class="story-ph">
+        My name is Julio, and I am a Venezuelan living in Caracas. I have been part of the ECS community for 3 or so months now and has been honestly, great. The store has given me the chance to earn actual significant income to take care of me and my close family. However, due to the recent 7.2 and 7.5 earthquakes in Venezuela, my home and my family's home have been severely damaged. 2 family members have been reported dead, 2 injured but thankfully safe and 1 still missing. Thanks to the eBay method and Ecomsniper tool, I have been able to make a decent amount for me (tho maybe way less than what others here make) to live and pay expenses, and due to this situation i had to spend most funds on supplies for family and friends, such as food, medicine and heavy duty equipment that the government in this country, sadly, does not provide. The stories and tragedies are endless and the only ones saving people are the people themselves. I am asking for help to keep my family and I afloat, and to help those that are still in need of supplies.
+      </div>
+
+      <div class="story-ph">
+        I'm not asking for a whole lot from each and every one of you, but if you can spare a 1$, 3$ or 5$, it would mean the world to me and to others, as well as keeping my only source of survival afloat. 
+      </div>
+
+      <div class="story-ph">
+        Any amount is appreciated, and if you can not donate, please share this page with others that may be able to help. Loans are also accepted, and if you are able to help me with a loan, please reach out to me directly. I will be forever grateful for your help. If you need any receipts, verification or more to the story, feel free to reach out to me through my discord @4suki_ 
+
+        <span>
+          Thanks for your time and consideration.
+        </span>
+      </div>
+
+
+    </div>
+  </section>
+
+  <!-- DONATE -->
+  <section class="section fade-in d5">
+    <div class="section-label">How to Donate</div>
+    <p class="donate-intro">
+      All methods below are zero or near-zero fee. Tap to open or copy.
+      Once you send, feel free to DM me directly so I can count it.
+    </p>
+
+    <div class="methods">
+
+      <!-- PayPal -->
+      <a href="https://paypal.me/ashejsx" target="_blank" rel="noopener" class="method">
+        <div class="method-icon">
+          <!-- Card icon -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="5" width="20" height="14" rx="2"/>
+            <line x1="2" y1="10" x2="22" y2="10"/>
+          </svg>
+        </div>
+        <div class="method-body">
+          <span class="method-name">PayPal</span>
+          <span class="method-detail">paypal.me/ashejsx &nbsp;·&nbsp; send as Friends &amp; Family</span>
+        </div>
+        <div class="method-right">
+          <span class="fee-badge zero">0% fee</span>
+          <!-- Arrow icon (hand-drawn avoided: using a simple path inline consistent with the set) -->
+          <svg class="action-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 17L17 7M17 7H7M17 7v10"/>
+          </svg>
+        </div>
+      </a>
+
+      <!-- Binance Pay -->
+      <div class="method" onclick="copyText('213872393', 'binance-toast')">
+        <div class="method-icon">
+          <!-- Circle with cross: crypto generic -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M9 9l6 6M15 9l-6 6"/>
+          </svg>
+        </div>
+        <div class="method-body">
+          <span class="method-name">Binance Pay</span>
+          <span class="method-detail">Pay ID &nbsp;·&nbsp; 213872393 &nbsp;·&nbsp; tap to copy</span>
+        </div>
+        <div class="method-right">
+          <span class="fee-badge zero">0% fee</span>
+          <svg class="action-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2"/>
+            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+          </svg>
+        </div>
+        <div class="copy-toast" id="binance-toast">Copied to clipboard</div>
+      </div>
+
+      <!-- USDT TRC-20 -->
+      <div class="method" onclick="copyText('TJZtBabdosMxCjM2WLhim1A6isgYrUyGFu', 'usdt-toast')">
+        <div class="method-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v20M2 12h20"/>
+            <circle cx="12" cy="12" r="10"/>
+          </svg>
+        </div>
+        <div class="method-body">
+          <span class="method-name">USDT &nbsp;<span style="font-weight:300;color:var(--text-3);">TRC-20</span></span>
+          <span class="method-detail">TJZtBabd...yGFu &nbsp;·&nbsp; tap to copy full address</span>
+        </div>
+        <div class="method-right">
+          <span class="fee-badge zero">0% fee</span>
+          <svg class="action-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2"/>
+            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+          </svg>
+        </div>
+        <div class="copy-toast" id="usdt-toast">Copied to clipboard</div>
+      </div>
+
+      <!-- Wise -->
+      <a href="https://wise.com/pay/me/juliocesarenriquea" target="_blank" rel="noopener" class="method">
+        <div class="method-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+            <path d="M2 17l10 5 10-5"/>
+            <path d="M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <div class="method-body">
+          <span class="method-name">Wise</span>
+          <span class="method-detail">@juliocesarenriquea</span>
+        </div>
+        <div class="method-right">
+          <span class="fee-badge">Low fee</span>
+          <svg class="action-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 17L17 7M17 7H7M17 7v10"/>
+          </svg>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-left">
+      Julio "Asuki" H. &nbsp;&middot;&nbsp; Caracas, Venezuela<br />
+      Personal fundraiser &nbsp;&middot;&nbsp; 2026
+    </div>
+    <div class="footer-right">
+      Questions? DM me directly<br />before donating.
+    </div>
+  </footer>
+
+</div>
+
+<!-- =====================
+     SCRIPT
+===================== -->
+<script>
+  // ---- EDIT THESE TWO VALUES AS DONATIONS COME IN ----
+  const RAISED = 0;    // total USD raised
+  const DONORS = 0;    // number of people who donated
+  // ---------------------------------------------------
+
+  const GOAL = 500;
+
+  function animateNumber(el, target, duration = 1200) {
+    const start = performance.now();
+    const from = 0;
+
+    function step(now) {
+      const t = Math.min((now - start) / duration, 1);
+      const ease = 1 - Math.pow(1 - t, 3);
+      el.textContent = Math.round(from + (target - from) * ease).toLocaleString();
+      if (t < 1) requestAnimationFrame(step);
+    }
+
+    requestAnimationFrame(step);
+  }
+
+  function init() {
+    const pct = Math.min((RAISED / GOAL) * 100, 100);
+
+    animateNumber(document.getElementById('raised-num'), RAISED);
+
+    setTimeout(() => {
+      document.getElementById('progress-fill').style.width = pct + '%';
+    }, 200);
+
+    document.getElementById('pct-label').textContent = Math.round(pct) + '% funded';
+    document.getElementById('donors-label').textContent =
+      DONORS === 0 ? '0 donors'
+      : DONORS === 1 ? '1 donor'
+      : DONORS + ' donors';
+  }
+
+  function copyText(text, toastId) {
+    navigator.clipboard.writeText(text).then(() => {
+      const toast = document.getElementById(toastId);
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+    }).catch(() => {
+      // Fallback for browsers that block clipboard without HTTPS
+      const el = document.createElement('textarea');
+      el.value = text;
+      el.style.position = 'fixed';
+      el.style.opacity = '0';
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+
+      const toast = document.getElementById(toastId);
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+    });
+  }
+
+  init();
+</script>
+
+</body>
+</html>
